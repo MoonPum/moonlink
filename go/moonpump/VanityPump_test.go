@@ -10,18 +10,18 @@ import (
 	"testing"
 )
 
-func TestEncodeDecode_AcceptOwnership(t *testing.T) {
+func TestEncodeDecode_VanityPump(t *testing.T) {
 	fu := ag_gofuzz.New().NilChance(0)
 	for i := 0; i < 1; i++ {
-		t.Run("AcceptOwnership"+strconv.Itoa(i), func(t *testing.T) {
+		t.Run("VanityPump"+strconv.Itoa(i), func(t *testing.T) {
 			{
-				params := new(AcceptOwnership)
+				params := new(VanityPump)
 				fu.Fuzz(params)
 				params.AccountMetaSlice = nil
 				buf := new(bytes.Buffer)
 				err := encodeT(*params, buf)
 				ag_require.NoError(t, err)
-				got := new(AcceptOwnership)
+				got := new(VanityPump)
 				err = decodeT(got, buf.Bytes())
 				got.AccountMetaSlice = nil
 				ag_require.NoError(t, err)

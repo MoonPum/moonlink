@@ -75,6 +75,7 @@ func (obj *GrudateParams) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err 
 
 type InitializeParams struct {
 	TradeFeeBasisPoints *uint16 `bin:"optional"`
+	PumpFee             *uint64 `bin:"optional"`
 }
 
 func (obj InitializeParams) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
@@ -96,6 +97,24 @@ func (obj InitializeParams) MarshalWithEncoder(encoder *ag_binary.Encoder) (err 
 			}
 		}
 	}
+	// Serialize `PumpFee` param (optional):
+	{
+		if obj.PumpFee == nil {
+			err = encoder.WriteBool(false)
+			if err != nil {
+				return err
+			}
+		} else {
+			err = encoder.WriteBool(true)
+			if err != nil {
+				return err
+			}
+			err = encoder.Encode(obj.PumpFee)
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
@@ -108,6 +127,19 @@ func (obj *InitializeParams) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (e
 		}
 		if ok {
 			err = decoder.Decode(&obj.TradeFeeBasisPoints)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	// Deserialize `PumpFee` (optional):
+	{
+		ok, err := decoder.ReadBool()
+		if err != nil {
+			return err
+		}
+		if ok {
+			err = decoder.Decode(&obj.PumpFee)
 			if err != nil {
 				return err
 			}
@@ -219,6 +251,7 @@ type UpdateConfigParams struct {
 	FeeRecipient        *ag_solanago.PublicKey `bin:"optional"`
 	Operator            *ag_solanago.PublicKey `bin:"optional"`
 	TradeFeeBasisPoints *uint16                `bin:"optional"`
+	PumpFee             *uint64                `bin:"optional"`
 }
 
 func (obj UpdateConfigParams) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
@@ -276,6 +309,24 @@ func (obj UpdateConfigParams) MarshalWithEncoder(encoder *ag_binary.Encoder) (er
 			}
 		}
 	}
+	// Serialize `PumpFee` param (optional):
+	{
+		if obj.PumpFee == nil {
+			err = encoder.WriteBool(false)
+			if err != nil {
+				return err
+			}
+		} else {
+			err = encoder.WriteBool(true)
+			if err != nil {
+				return err
+			}
+			err = encoder.Encode(obj.PumpFee)
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
@@ -318,6 +369,74 @@ func (obj *UpdateConfigParams) UnmarshalWithDecoder(decoder *ag_binary.Decoder) 
 				return err
 			}
 		}
+	}
+	// Deserialize `PumpFee` (optional):
+	{
+		ok, err := decoder.ReadBool()
+		if err != nil {
+			return err
+		}
+		if ok {
+			err = decoder.Decode(&obj.PumpFee)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+type VanityPumpParams struct {
+	Seeds  [32]uint8
+	Name   string
+	Ticker string
+	Uri    string
+}
+
+func (obj VanityPumpParams) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
+	// Serialize `Seeds` param:
+	err = encoder.Encode(obj.Seeds)
+	if err != nil {
+		return err
+	}
+	// Serialize `Name` param:
+	err = encoder.Encode(obj.Name)
+	if err != nil {
+		return err
+	}
+	// Serialize `Ticker` param:
+	err = encoder.Encode(obj.Ticker)
+	if err != nil {
+		return err
+	}
+	// Serialize `Uri` param:
+	err = encoder.Encode(obj.Uri)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (obj *VanityPumpParams) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
+	// Deserialize `Seeds`:
+	err = decoder.Decode(&obj.Seeds)
+	if err != nil {
+		return err
+	}
+	// Deserialize `Name`:
+	err = decoder.Decode(&obj.Name)
+	if err != nil {
+		return err
+	}
+	// Deserialize `Ticker`:
+	err = decoder.Decode(&obj.Ticker)
+	if err != nil {
+		return err
+	}
+	// Deserialize `Uri`:
+	err = decoder.Decode(&obj.Uri)
+	if err != nil {
+		return err
 	}
 	return nil
 }

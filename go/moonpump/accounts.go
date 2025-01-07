@@ -156,6 +156,7 @@ type Config struct {
 	Bump                uint8
 	TradeFeeBasisPoints uint16
 	PendingAdmin        ag_solanago.PublicKey
+	PumpFee             uint64
 	Padding             []byte
 }
 
@@ -194,6 +195,11 @@ func (obj Config) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
 	}
 	// Serialize `PendingAdmin` param:
 	err = encoder.Encode(obj.PendingAdmin)
+	if err != nil {
+		return err
+	}
+	// Serialize `PumpFee` param:
+	err = encoder.Encode(obj.PumpFee)
 	if err != nil {
 		return err
 	}
@@ -246,6 +252,11 @@ func (obj *Config) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) 
 	}
 	// Deserialize `PendingAdmin`:
 	err = decoder.Decode(&obj.PendingAdmin)
+	if err != nil {
+		return err
+	}
+	// Deserialize `PumpFee`:
+	err = decoder.Decode(&obj.PumpFee)
 	if err != nil {
 		return err
 	}

@@ -12,7 +12,7 @@ import (
 	ag_treeout "github.com/gagliardetto/treeout"
 )
 
-var ProgramID ag_solanago.PublicKey = ag_solanago.MustPublicKeyFromBase58("Grkz9Pd3tMrEDNc77rnj8iWkBgSS8ggeiLzrVDNSLcjt")
+var ProgramID ag_solanago.PublicKey = ag_solanago.MustPublicKeyFromBase58("2Poh8gF6PJhjNAa5bxPZHZgpYZbFvD8JQwyUyE48Q5cL")
 
 func SetProgramID(pubkey ag_solanago.PublicKey) {
 	ProgramID = pubkey
@@ -32,13 +32,13 @@ var (
 
 	Instruction_Pump = ag_binary.TypeID([8]byte{78, 151, 194, 146, 70, 158, 93, 232})
 
+	Instruction_VanityPump = ag_binary.TypeID([8]byte{161, 101, 23, 158, 187, 152, 157, 38})
+
 	Instruction_Buy = ag_binary.TypeID([8]byte{102, 6, 61, 18, 1, 218, 235, 234})
 
 	Instruction_Sell = ag_binary.TypeID([8]byte{51, 230, 133, 164, 1, 127, 131, 173})
 
 	Instruction_Graduate = ag_binary.TypeID([8]byte{45, 235, 225, 181, 17, 218, 64, 130})
-
-	Instruction_AcceptOwnership = ag_binary.TypeID([8]byte{172, 23, 43, 13, 238, 213, 85, 150})
 
 	Instruction_UpdateConfig = ag_binary.TypeID([8]byte{29, 158, 252, 191, 10, 83, 219, 99})
 
@@ -52,14 +52,14 @@ func InstructionIDToName(id ag_binary.TypeID) string {
 		return "Initialize"
 	case Instruction_Pump:
 		return "Pump"
+	case Instruction_VanityPump:
+		return "VanityPump"
 	case Instruction_Buy:
 		return "Buy"
 	case Instruction_Sell:
 		return "Sell"
 	case Instruction_Graduate:
 		return "Graduate"
-	case Instruction_AcceptOwnership:
-		return "AcceptOwnership"
 	case Instruction_UpdateConfig:
 		return "UpdateConfig"
 	case Instruction_TransferOwnership:
@@ -91,6 +91,9 @@ var InstructionImplDef = ag_binary.NewVariantDefinition(
 			"pump", (*Pump)(nil),
 		},
 		{
+			"vanity_pump", (*VanityPump)(nil),
+		},
+		{
 			"buy", (*Buy)(nil),
 		},
 		{
@@ -98,9 +101,6 @@ var InstructionImplDef = ag_binary.NewVariantDefinition(
 		},
 		{
 			"graduate", (*Graduate)(nil),
-		},
-		{
-			"accept_ownership", (*AcceptOwnership)(nil),
 		},
 		{
 			"update_config", (*UpdateConfig)(nil),
