@@ -135,17 +135,6 @@ export class Pump {
     );
   };
 
-  acceptOwnership = async (pendingAdmin: PublicKey) => {
-    const config = this.pumpDeriver.ConfigPda()[0];
-    return instructions.createAcceptOwnershipInstruction(
-      {
-        pendingAdmin,
-        config,
-      } satisfies instructions.AcceptOwnershipInstructionAccounts,
-      this.program
-    );
-  };
-
   pump = async (
     connection: Connection,
     creator: PublicKey,
@@ -186,6 +175,52 @@ export class Pump {
           uri,
         } satisfies types.PumpParams,
       } satisfies instructions.PumpInstructionArgs,
+      this.program
+    );
+  };
+
+  vanityPump = async (
+    connection: Connection,
+    creator: PublicKey,
+    seeds: Uint8Array,
+    name: string,
+    ticker: string,
+    uri: string
+  ) => {
+    const config = this.pumpDeriver.ConfigPda()[0];
+    const mint = this.pumpDeriver.VanityMintPda(seeds)[0];
+    const bondingCurve = this.pumpDeriver.BondingCurvePda(mint)[0];
+    const bondingCurveVault =
+      this.pumpDeriver.bondingCurveVaultPda(bondingCurve)[0];
+    const metadataAccount = this.pumpDeriver.MetadataPda(mint)[0];
+    const bondingCurveTokenAccount = this.bondingCurveTokenAccount(
+      bondingCurve,
+      mint
+    );
+
+    const configInfo = await this.config(connection);
+
+    return instructions.createVanityPumpInstruction(
+      {
+        creator,
+        config,
+        feeRecipient: configInfo.feeRecipient,
+        mint,
+        bondingCurve,
+        bondingCurveVault,
+        metadataAccount,
+        bondingCurveTokenAccount,
+        tokenMetadataProgram: METADATA_TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+      } satisfies instructions.VanityPumpInstructionAccounts,
+      {
+        params: {
+          seeds: Array.from(seeds),
+          name,
+          ticker,
+          uri,
+        } satisfies types.VanityPumpParams,
+      } satisfies instructions.VanityPumpInstructionArgs,
       this.program
     );
   };

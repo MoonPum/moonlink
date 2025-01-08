@@ -1,4 +1,4 @@
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey } from '@solana/web3.js';
 
 const CONFIG_SEEDS = Buffer.from("config", "utf-8");
 const BONDING_CURVE_SEEDS = Buffer.from("bonding-curve", "utf-8");
@@ -33,6 +33,10 @@ export class PdaDeriver {
       [creator.toBuffer(), Buffer.from(ticker, "utf-8")],
       this.program
     );
+  };
+
+  VanityMintPda = (seeds: Uint8Array): [PublicKey, number] => {
+    return PublicKey.findProgramAddressSync([seeds], this.program);
   };
 
   MetadataPda = (mint: PublicKey): [PublicKey, number] => {
