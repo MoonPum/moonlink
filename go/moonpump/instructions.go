@@ -12,7 +12,7 @@ import (
 	ag_treeout "github.com/gagliardetto/treeout"
 )
 
-var ProgramID ag_solanago.PublicKey = ag_solanago.MustPublicKeyFromBase58("2Poh8gF6PJhjNAa5bxPZHZgpYZbFvD8JQwyUyE48Q5cL")
+var ProgramID ag_solanago.PublicKey = ag_solanago.MustPublicKeyFromBase58("5MkGC4Dyk5euSWSEpp3zMHuRkuLujQQG71HR19AnbVhj")
 
 func SetProgramID(pubkey ag_solanago.PublicKey) {
 	ProgramID = pubkey
@@ -81,36 +81,6 @@ func (inst *Instruction) EncodeToTree(parent ag_treeout.Branches) {
 	}
 }
 
-var InstructionImplDef = ag_binary.NewVariantDefinition(
-	ag_binary.AnchorTypeIDEncoding,
-	[]ag_binary.VariantType{
-		{
-			"initialize", (*Initialize)(nil),
-		},
-		{
-			"pump", (*Pump)(nil),
-		},
-		{
-			"vanity_pump", (*VanityPump)(nil),
-		},
-		{
-			"buy", (*Buy)(nil),
-		},
-		{
-			"sell", (*Sell)(nil),
-		},
-		{
-			"graduate", (*Graduate)(nil),
-		},
-		{
-			"update_config", (*UpdateConfig)(nil),
-		},
-		{
-			"transfer_ownership", (*TransferOwnership)(nil),
-		},
-	},
-)
-
 func (inst *Instruction) ProgramID() ag_solanago.PublicKey {
 	return ProgramID
 }
@@ -129,10 +99,6 @@ func (inst *Instruction) Data() ([]byte, error) {
 
 func (inst *Instruction) TextEncode(encoder *ag_text.Encoder, option *ag_text.Option) error {
 	return encoder.Encode(inst.Impl, option)
-}
-
-func (inst *Instruction) UnmarshalWithDecoder(decoder *ag_binary.Decoder) error {
-	return inst.BaseVariant.UnmarshalBinaryVariant(decoder, InstructionImplDef)
 }
 
 func (inst *Instruction) MarshalWithEncoder(encoder *ag_binary.Encoder) error {
